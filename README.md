@@ -1,2 +1,2 @@
-# torrent-downloader
-Simple torrent downloader, available from command line.
+# torrent-client
+Simple torrent client, available from command line.
