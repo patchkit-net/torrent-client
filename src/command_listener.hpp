@@ -15,7 +15,7 @@ public:
 
     bool readCommand(std::string &line)
     {
-        return std::getline(std::cin, line);
+        return (bool)std::getline(std::cin, line);
     }
 
 private:

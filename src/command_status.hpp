@@ -7,6 +7,7 @@
 #include "libtorrent/bencode.hpp"
 #include "libtorrent/session.hpp"
 #include "libtorrent/torrent_handle.hpp"
+#include "libtorrent/torrent_status.hpp"
 
 #include <yaml-cpp/yaml.h>
 

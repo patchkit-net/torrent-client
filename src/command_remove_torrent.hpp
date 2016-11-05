@@ -1,5 +1,7 @@
 #pragma once
 
+#include "libtorrent/torrent_status.hpp"
+
 class CommandRemoveTorrent : public Command
 {
 public:

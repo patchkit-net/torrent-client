@@ -2,8 +2,11 @@
 
 #include <string>
 #include <iostream>
+#if defined(__linux__)
 #include <libgen.h>
+#endif
 
+#include "libtorrent/torrent_info.hpp"
 #include "commons.hpp"
 #include "command.hpp"
 #include "messages.hpp"
@@ -27,13 +30,17 @@ public:
             string torrentPath = parts[1];
             string savePath = parts[2];
 
-            error_code ec;
+            boost::system::error_code ec;
 
             add_torrent_params params;
 
             params.name = torrentPath.c_str();
             params.save_path = savePath;
+#if LIBTORRENT_VERSION_MAJOR >= 1 && LIBTORRENT_VERSION_MINOR >= 2 && LIBTORRENT_VERSION_TINY >= 0
+            params.ti = std::make_shared<torrent_info>(torrentPath.c_str(), ec);
+#else
             params.ti = new torrent_info(torrentPath.c_str(), ec);
+#endif
 
             if (ec)
             {
@@ -65,6 +72,6 @@ private:
 
     std::string basename(const std::string& p_filename)
     {
-        return boost::filesystem::path(p_filename.c_str()).stem().native();
+        return boost::filesystem::path(p_filename.c_str()).stem().string();
     }
 };

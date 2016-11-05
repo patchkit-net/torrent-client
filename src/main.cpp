@@ -1,5 +1,7 @@
 #include <stdlib.h>
+#if defined(__linux__)
 #include <unistd.h>
+#endif
 #include <iostream>
 #include "libtorrent/entry.hpp"
 #include "libtorrent/bencode.hpp"
@@ -34,18 +36,30 @@ int main(int argc, char* argv[])
     using namespace libtorrent;
     using namespace std;
 
+    session s;
+#if LIBTORRENT_VERSION_MAJOR >= 1 && LIBTORRENT_VERSION_MINOR >= 2 && LIBTORRENT_VERSION_TINY >= 0
+    settings_pack settings;
 
+    settings.set_int(settings_pack::active_downloads, 8);
+    settings.set_int(settings_pack::active_seeds, 65536);
+    settings.set_int(settings_pack::active_limit, 65536);
+    settings.set_bool(settings_pack::announce_to_all_trackers, true);
+    settings.set_bool(settings_pack::announce_to_all_tiers, true);
+
+    s.apply_settings(settings);
+#else
     session_settings settings;
+
     settings.active_downloads = 8;
     settings.active_seeds = 65536;
     settings.active_limit = 65536;
     settings.announce_to_all_trackers = true;
     settings.announce_to_all_tiers = true;
 
-    session s;
     s.set_settings(settings);
+#endif
 
-    error_code ec;
+    boost::system::error_code ec;
 
     if (has_param("--no-dht", argc, argv))
     {
