@@ -16,16 +16,10 @@ using json = nlohmann::json;
 class Messages
 {
 public:
-    static std::ostream& global()
-    {
-        std::cout << "G ";
-        return std::cout;
-    }
-
     static std::ostream& debug()
     {
-        std::cout << "#=debug ";
-        return std::cout;
+        std::cerr << "#=debug ";
+        return std::cerr;
     }
 
     static void respondSucceed(const std::string& p_message)
