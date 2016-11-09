@@ -71,7 +71,7 @@ if(USE_YAML)
 endif()
 
 if(USE_JSON)
-  include_directories(${JSONCPP_INCLUDEDIR})
+  include_directories(${JSON_INCLUDEDIR})
 endif()
 
 add_executable(torrent-client src/main.cpp)
