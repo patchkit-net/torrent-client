@@ -9,7 +9,12 @@
 #include "libtorrent/torrent_handle.hpp"
 #include "libtorrent/torrent_status.hpp"
 
+#if defined(USE_YAML)
 #include <yaml-cpp/yaml.h>
+#elif defined(USE_JSON)
+#include "json.hpp"
+using json = nlohmann::json;
+#endif
 
 #include "messages.hpp"
 #include "command.hpp"
@@ -31,12 +36,21 @@ public:
         std::vector<torrent_status> stats;
         m_session->get_torrent_status(&stats, check);
 
+#if defined(USE_YAML)
         YAML::Node node;
+#elif defined(USE_JSON)
+        json node;
+        node["torrents"] = json::array();
+#endif
         node["count"] = stats.size();
 
         BOOST_FOREACH(torrent_status status, stats)
         {
+#if defined(USE_YAML)
             YAML::Node tnode;
+#elif defined(USE_JSON)
+            json tnode;
+#endif
             tnode["name"] = status.handle.name();
             //tnode["save_path"] = status.handle.save_path();
             tnode["paused"] = status.paused;

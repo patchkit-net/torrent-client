@@ -1,7 +1,16 @@
 cmake_minimum_required (VERSION 2.8.1)
 project(torrent-client)
 
-string (COMPARE EQUAL "${CMAKE_SIZEOF_VOID_P}" "8" IS64BITS)
+option(USE_JSON "use JSON as serialization output")
+option(USE_YAML "use YAML as serialization output")
+
+if(NOT USE_JSON && NOT USE_YAML)
+  message(FATAL_ERROR "Neither USE_JSON nor USE_YAML are set!")
+endif()
+
+if(USE_JSON && USE_YAML)
+  message(FATAL_ERROR "Both USE_JSON and USE_YAML are set!")
+endif()
 
 # boost
 
@@ -33,24 +42,48 @@ endif()
 
 # yaml-cpp
 
-if(NOT YAML_CPP_INCLUDEDIR)
-  message(FATAL_ERROR "YAML_CPP_INCLUDEDIR is not set!")
+if(USE_YAML)
+  if(NOT YAML_CPP_INCLUDEDIR)
+    message(FATAL_ERROR "YAML_CPP_INCLUDEDIR is not set!")
+  endif()
+
+  if(NOT LIB_YAML_CPP_RELEASE)
+    message(FATAL_ERROR "LIB_YAML_CPP_RELEASE is not set!")
+  endif()
+
+  if(NOT LIB_YAML_CPP_DEBUG)
+    message(FATAL_ERROR "LIB_YAML_CPP_DEBUG is not set!")
+  endif()
 endif()
 
-if(NOT LIB_YAML_CPP_RELEASE)
-  message(FATAL_ERROR "LIB_YAML_CPP_RELEASE is not set!")
+# json
+
+if(USE_JSON)
+  if(NOT JSON_INCLUDEDIR)
+    message(FATAL_ERROR "JSON_INCLUDEDIR is not set!")
+  endif()
 endif()
 
-if(NOT LIB_YAML_CPP_DEBUG)
-  message(FATAL_ERROR "LIB_YAML_CPP_DEBUG is not set!")
+include_directories(include ${BOOST_INCLUDEDIR} ${LIBTORRENT_INCLUDEDIR})
+
+if(USE_YAML)
+  include_directories(${YAML_CPP_INCLUDEDIR})
 endif()
 
-include_directories(include ${BOOST_INCLUDEDIR} ${LIBTORRENT_INCLUDEDIR} ${YAML_CPP_INCLUDEDIR})
+if(USE_JSON)
+  include_directories(${JSONCPP_INCLUDEDIR})
+endif()
 
 add_executable(torrent-client src/main.cpp)
 
-target_link_libraries(torrent-client optimized ${LIBTORRENT_RELEASE} ${LIB_YAML_CPP_RELEASE} ${LIBBOOST_SYSTEM_RELEASE})
+target_link_libraries(torrent-client optimized ${LIBBOOST_SYSTEM_RELEASE} ${LIBTORRENT_RELEASE})
 
-target_link_libraries(torrent-client debug ${LIBTORRENT_DEBUG} ${LIB_YAML_CPP_DEBUG} ${LIBBOOST_SYSTEM_DEBUG})
+target_link_libraries(torrent-client debug ${LIBBOOST_SYSTEM_DEBUG} ${LIBTORRENT_DEBUG})
+
+if(USE_YAML)
+  target_link_libraries(torrent-client optimized ${LIB_YAML_CPP_RELEASE})
+
+  target_link_libraries(torrent-client debug ${LIB_YAML_CPP_DEBUG})
+endif()
 
 add_definitions(-DBOOST_ALL_NO_LIB)
