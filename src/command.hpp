@@ -29,7 +29,7 @@ public:
             Messages::respondFailed(1, "Unknown command: '" + requestedCommandName + "'");
         } else
         {
-            Messages::debug() << "Bad command" << std::endl;
+            Messages::respondFailed(1, "Bad command: '" + p_line + "'");
         }
 
         return true;
