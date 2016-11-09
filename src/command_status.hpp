@@ -63,6 +63,7 @@ public:
             tnode["progress"] = status.progress;
             tnode["is_seeding"] = status.is_seeding;
             tnode["seeding_time"] = status.seeding_time;
+            tnode["total_wanted"] = status.total_wanted;
 
             node["torrents"].push_back(tnode);
         }
