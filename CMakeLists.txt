@@ -1,14 +1,14 @@
-cmake_minimum_required (VERSION 2.8.1)
+cmake_minimum_required (VERSION 3.1.0)
 project(torrent-client)
 
 option(USE_JSON "use JSON as serialization output")
 option(USE_YAML "use YAML as serialization output")
 
-if(NOT USE_JSON && NOT USE_YAML)
+if(NOT (USE_JSON OR USE_YAML))
   message(FATAL_ERROR "Neither USE_JSON nor USE_YAML are set!")
 endif()
 
-if(USE_JSON && USE_YAML)
+if(USE_JSON AND USE_YAML)
   message(FATAL_ERROR "Both USE_JSON and USE_YAML are set!")
 endif()
 
@@ -43,6 +43,7 @@ endif()
 # yaml-cpp
 
 if(USE_YAML)
+  add_definitions(-DUSE_YAML)
   if(NOT YAML_CPP_INCLUDEDIR)
     message(FATAL_ERROR "YAML_CPP_INCLUDEDIR is not set!")
   endif()
@@ -59,6 +60,8 @@ endif()
 # json
 
 if(USE_JSON)
+  set (CMAKE_CXX_STANDARD 11)
+  add_definitions(-DUSE_JSON)
   if(NOT JSON_INCLUDEDIR)
     message(FATAL_ERROR "JSON_INCLUDEDIR is not set!")
   endif()
