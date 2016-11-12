@@ -38,6 +38,8 @@ public:
             params.save_path = savePath;
 #if LIBTORRENT_VERSION_MAJOR >= 1 && LIBTORRENT_VERSION_MINOR >= 2 && LIBTORRENT_VERSION_TINY >= 0
             params.ti = std::make_shared<torrent_info>(torrentPath.c_str(), ec);
+#elif LIBTORRENT_VERSION_MAJOR >= 1 && LIBTORRENT_VERSION_MINOR >= 1 && LIBTORRENT_VERSION_TINY >= 0
+            params.ti = boost::make_shared<torrent_info>(torrentPath.c_str(), ec);
 #else
             params.ti = new torrent_info(torrentPath.c_str(), ec);
 #endif
