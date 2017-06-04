@@ -4,6 +4,11 @@ project(torrent-client)
 option(USE_JSON "use JSON as serialization output")
 option(USE_YAML "use YAML as serialization output")
 
+# static runtime linking
+
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+
 if(NOT (USE_JSON OR USE_YAML))
   message(FATAL_ERROR "Neither USE_JSON nor USE_YAML are set!")
 endif()
@@ -24,6 +29,14 @@ endif()
 
 if(NOT LIBBOOST_SYSTEM_DEBUG)
   message(FATAL_ERROR "LIBBOOST_SYSTEM_DEBUG is not set!")
+endif()
+
+if(NOT LIBBOOST_RANDOM_RELEASE)
+  message(FATAL_ERROR "LIBBOOST_RANDOM_RELEASE is not set!")
+endif()
+
+if(NOT LIBBOOST_RANDOM_DEBUG)
+  message(FATAL_ERROR "LIBBOOST_RANDOM_DEBUG is not set!")
 endif()
 
 # libtorrent
@@ -79,9 +92,12 @@ endif()
 
 add_executable(torrent-client src/main.cpp)
 
-target_link_libraries(torrent-client optimized ${LIBBOOST_SYSTEM_RELEASE} ${LIBTORRENT_RELEASE})
+message("heremessage!")
+message(${LIBBOOST_RANDOM_RELEASE})
 
-target_link_libraries(torrent-client debug ${LIBBOOST_SYSTEM_DEBUG} ${LIBTORRENT_DEBUG})
+target_link_libraries(torrent-client optimized ${LIBBOOST_RANDOM_RELEASE} ${LIBBOOST_SYSTEM_RELEASE} ${LIBTORRENT_RELEASE} Iphlpapi.lib)
+
+# target_link_libraries(torrent-client debug ${LIBBOOST_SYSTEM_DEBUG} ${LIBBOOST_RANDOM_DEBUG} ${LIBTORRENT_DEBUG})
 
 if(USE_YAML)
   target_link_libraries(torrent-client optimized ${LIB_YAML_CPP_RELEASE})
