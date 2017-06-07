@@ -43,7 +43,7 @@ cmake -DCMAKE_BUILD_TYPE=$1 \
   -DCMAKE_INSTALL_PREFIX=/home/user/Documents/torrent-client/bin/linux64/output \
   -DUSE_JSON=on \
   -G "Unix Makefiles" \
-  ../../
+  ../../../
 
 make
 
