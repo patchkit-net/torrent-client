@@ -26,7 +26,7 @@ if [ ! -d bin/$PDK_PLATFORM_NAME/$1 ]; then
   mkdir -p bin/$PDK_PLATFORM_NAME/$1
 fi
 
-pushd bin/linux64
+pushd bin/$PDK_PLATFORM_NAME/$1
 
 cmake -DCMAKE_BUILD_TYPE=$1 \
   -DBOOST_INCLUDEDIR=$PDK_BOOST_INCLUDEDIR \
