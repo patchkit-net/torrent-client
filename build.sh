@@ -13,13 +13,13 @@ function usage()
 if [ -z "$1" ]
   then
     usage
-    return 1
+    exit 1
 fi
 
-if [[ "$1" != "Release" || "$1" != "Debug" ]]; then
+if [[ "$1" != "Release" && "$1" != "Debug" ]]; then
   echo Error: unavailable \<type\> $1
   usage
-  return 1
+  exit 1
 fi
 
 if [ ! -d bin/linux64 ]; then
