@@ -6,8 +6,10 @@ option(USE_YAML "use YAML as serialization output")
 
 # static runtime linking
 
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT") 
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd") 
+
+# json and yaml
 
 if(NOT (USE_JSON OR USE_YAML))
   message(FATAL_ERROR "Neither USE_JSON nor USE_YAML are set!")
@@ -37,6 +39,14 @@ endif()
 
 if(NOT LIBBOOST_RANDOM_DEBUG)
   message(FATAL_ERROR "LIBBOOST_RANDOM_DEBUG is not set!")
+endif()
+
+if(NOT LIBBOOST_CHRONO_RELEASE)
+  message(FATAL_ERROR "LIBBOOST_CHRONO_RELEASE is not set!")
+endif()
+
+if(NOT LIBBOOST_CHRONO_DEBUG)
+  message(FATAL_ERROR "LIBBOOST_CHRONO_DEBUG is not set!")
 endif()
 
 # libtorrent
@@ -90,14 +100,30 @@ if(USE_JSON)
   include_directories(${JSON_INCLUDEDIR})
 endif()
 
+find_package(Threads REQUIRED)
 add_executable(torrent-client src/main.cpp)
 
-message("heremessage!")
-message(${LIBBOOST_RANDOM_RELEASE})
+target_link_libraries(torrent-client optimized ${LIBTORRENT_RELEASE})
+target_link_libraries(torrent-client optimized ${LIBBOOST_SYSTEM_RELEASE})
+target_link_libraries(torrent-client optimized ${LIBBOOST_RANDOM_RELEASE})
+target_link_libraries(torrent-client optimized ${LIBBOOST_CHRONO_RELEASE})
+if(CMAKE_USE_PTHREADS_INIT)
+    target_link_libraries(torrent-client optimized ${CMAKE_THREAD_LIBS_INIT})
+endif()
+if(WIN32)
+    target_link_libraries(torrent-client optimized Iphlpapi.lib)
+endif()
 
-target_link_libraries(torrent-client optimized ${LIBBOOST_RANDOM_RELEASE} ${LIBBOOST_SYSTEM_RELEASE} ${LIBTORRENT_RELEASE} Iphlpapi.lib)
-
-# target_link_libraries(torrent-client debug ${LIBBOOST_SYSTEM_DEBUG} ${LIBBOOST_RANDOM_DEBUG} ${LIBTORRENT_DEBUG})
+target_link_libraries(torrent-client debug ${LIBTORRENT_DEBUG})
+target_link_libraries(torrent-client debug ${LIBBOOST_SYSTEM_DEBUG})
+target_link_libraries(torrent-client debug ${LIBBOOST_RANDOM_DEBUG})
+target_link_libraries(torrent-client debug ${LIBBOOST_CHRONO_DEBUG})
+if(CMAKE_USE_PTHREADS_INIT)
+    target_link_libraries(torrent-client debug ${CMAKE_THREAD_LIBS_INIT})
+endif()
+if(WIN32)
+    target_link_libraries(torrent-client debug Iphlpapi.lib)
+endif()
 
 if(USE_YAML)
   target_link_libraries(torrent-client optimized ${LIB_YAML_CPP_RELEASE})
