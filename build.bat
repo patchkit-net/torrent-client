@@ -8,8 +8,8 @@ if not %1==Release if not %1==Debug (
   goto usage
 )
 
-mkdir %~dp0bin\%PDK_PLATFORM_NAME%
-pushd %~dp0bin\%PDK_PLATFORM_NAME%
+mkdir %~dp0bin\%PDK_PLATFORM_NAME%\%1
+pushd %~dp0bin\%PDK_PLATFORM_NAME%\%1
 
 echo %PDK_BOOST_INCLUDEDIR%
 

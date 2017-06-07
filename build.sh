@@ -22,8 +22,8 @@ if [[ "$1" != "Release" && "$1" != "Debug" ]]; then
   exit 1
 fi
 
-if [ ! -d bin/linux64 ]; then
-  mkdir -p bin/linux64
+if [ ! -d bin/$PDK_PLATFORM_NAME/$1 ]; then
+  mkdir -p bin/$PDK_PLATFORM_NAME/$1
 fi
 
 pushd bin/linux64
